@@ -36,6 +36,18 @@ app.get('/todos', (req, res) => {
   ]);
 });
 
+app.use(express.json());
+
+app.post('/register', (req, res) => {
+  const user = req.body;
+  console.log('DATA MASUK: ', user);
+
+  res.json({
+    message: 'User berhasil didaftarkan',
+    data: user,
+  });
+});
+
 // Run server on port 3000
 app.listen(3000, () => {
   console.log('Server runs in http://localhost:3000');
