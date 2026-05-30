@@ -183,95 +183,296 @@
 // Practice 4
 // ==========================================================================
 
+// const express = require('express');
+// const cors = require('cors');
+// require('dotenv').config();
+// const mongoose = require('mongoose');
+// const { z } = require('zod');
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// const userSchema = z.object({
+//   name: z.string().min(1),
+//   email: z.string().email(),
+//   password: z.string().min(6),
+// });
+
+// // using then
+// // mongoose
+// //   .connect(process.env.MONGO_URI)
+// //   .then(() => console.log('MongoDB connected'))
+// //   .catch((err) => console.log('Connection error: ', err));
+
+// // using async - await
+// async function connectDb() {
+//   try {
+//     await mongoose.connect(process.env.MONGO_URI);
+//     console.log('MongoDB connected');
+//   } catch (err) {
+//     console.log('Connection error: ', err);
+//   }
+// }
+
+// connectDb();
+
+// const UserSchema = new mongoose.Schema({
+//   name: String,
+//   email: String,
+//   password: String,
+// });
+
+// const User = mongoose.model('User', UserSchema);
+
+// function validate(schema) {
+//   return (req, res, next) => {
+//     const result = schema.safeParse(req.body);
+
+//     if (!result.success) {
+//       return res.status(400).json({
+//         message: 'validation failed',
+//         error: result.error.issues,
+//       });
+//     }
+
+//     req.body = result.data;
+//     next();
+//   };
+// }
+
+// // CREATE
+// app.post('/users', validate(userSchema), async (req, res) => {
+//   try {
+//     const newUser = await User.create(req.body);
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'User created',
+//       data: newUser,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+// // READ
+// app.get('/users', async (req, res) => {
+//   try {
+//     const allUsers = await User.find();
+//     res.status(200).json({
+//       success: true,
+//       message: 'All users',
+//       data: allUsers,
+//     });
+//   } catch (err) {
+//     console.log('Error to get all users: ', err);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+// // READ BY ID
+// app.get('/users/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Invalid user id',
+//       });
+//     }
+
+//     const selectedUser = await User.findById(id);
+
+//     if (!selectedUser) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'User not found',
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: selectedUser,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+// // UPDATE
+// app.put('/users/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Invalid user ID',
+//       });
+//     }
+
+//     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+//       new: true,
+//     });
+
+//     if (!updatedUser) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'User not found',
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'User updated',
+//       data: updatedUser,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+// // DELETE
+// app.delete('/users/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Invalid user ID',
+//       });
+//     }
+//     const deletedUser = await User.findByIdAndDelete(id);
+
+//     if (!deletedUser) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'User not found',
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'User deleted',
+//       data: deletedUser,
+//     });
+//   } catch (err) {
+//     console.log('Error to delete: ', err);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+// app.listen(process.env.PORT, () => {
+//   console.log(`server runs in http://localhost:${process.env.PORT}`);
+// });
+
+// ==========================================================================
+// Practice 4
+// ==========================================================================
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const { z, success } = require('zod');
 const mongoose = require('mongoose');
-const { z } = require('zod');
-
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-const userSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-// using then
-// mongoose
-//   .connect(process.env.MONGO_URI)
-//   .then(() => console.log('MongoDB connected'))
-//   .catch((err) => console.log('Connection error: ', err));
-
-// using async - await
 async function connectDb() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected');
+    console.log('MongoDb connected');
   } catch (err) {
     console.log('Connection error: ', err);
   }
 }
-
 connectDb();
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-});
+const UserSchema = new mongoose.Schema(
+  {
+    // name: String,
+    // email: String,
+    // password: String,
+  },
+  { strict: false }
+);
 
-const User = mongoose.model('User', UserSchema);
+const Movies = mongoose.model('Movies', UserSchema, 'movies');
 
-function validate(schema) {
-  return (req, res, next) => {
-    const result = schema.safeParse(req.body);
+// const userSchema = z.object({
+//   name: z.string().min(1),
+//   email: z.string().email(),
+//   password: z.string().min(6),
+// });
 
-    if (!result.success) {
-      return res.status(400).json({
-        message: 'validation failed',
-        error: result.error.issues,
-      });
-    }
+// function validate(schema) {
+//   return (req, res, next) => {
+//     const result = schema.safeParse(req.body);
 
-    req.body = result.data;
-    next();
-  };
-}
+//     if (!result.success) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'validation failed',
+//         error: result.error.issues,
+//       });
+//     }
 
-// CREATE
-app.post('/users', validate(userSchema), async (req, res) => {
+//     req.body = result.data;
+//     next();
+//   };
+// }
+
+// app.post('/register', validate(userSchema), async (req, res) => {
+//   try {
+//     const newUser = req.body;
+//     const createdUser = await User.create(newUser);
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'New user created',
+//       data: createdUser,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
+
+app.get('/movies', async (req, res) => {
   try {
-    const newUser = await User.create(req.body);
-
-    res.status(201).json({
-      success: true,
-      message: 'User created',
-      data: newUser,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: err.message,
-    });
-  }
-});
-
-// READ
-app.get('/users', async (req, res) => {
-  try {
-    const allUsers = await User.find();
+    const allUsers = await Movies.find().limit(5);
     res.status(200).json({
       success: true,
-      message: 'All users',
       data: allUsers,
     });
   } catch (err) {
-    console.log('Error to get all users: ', err);
     res.status(500).json({
       success: false,
       message: 'Internal server error',
@@ -280,110 +481,39 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// READ BY ID
-app.get('/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid user id',
-      });
-    }
+// app.delete('/register/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const deletedUser = await User.findByIdAndDelete(id);
+//     res.status(200).json({
+//       success: true,
+//       message: 'user deleted',
+//       data: deletedUser,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
 
-    const selectedUser = await User.findById(id);
-
-    if (!selectedUser) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: selectedUser,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: err.message,
-    });
-  }
-});
-
-// UPDATE
-app.put('/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid user ID',
-      });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'User updated',
-      data: updatedUser,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: err.message,
-    });
-  }
-});
-
-// DELETE
-app.delete('/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid user ID',
-      });
-    }
-    const deletedUser = await User.findByIdAndDelete(id);
-
-    if (!deletedUser) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'User deleted',
-      data: deletedUser,
-    });
-  } catch (err) {
-    console.log('Error to delete: ', err);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: err.message,
-    });
-  }
-});
+// app.delete('/register', async (req, res) => {
+//   try {
+//     const result = await User.deleteMany({});
+//     res.status(200).json({
+//       success: true,
+//       deletedCount: result.deletedCount,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: err.message,
+//     });
+//   }
+// });
 
 app.listen(process.env.PORT, () => {
   console.log(`server runs in http://localhost:${process.env.PORT}`);
